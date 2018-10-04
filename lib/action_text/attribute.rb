@@ -27,6 +27,10 @@ module ActionText
             self.rich_text_#{name} ||= ActionText::RichText.new(name: "#{name}", record: self)
           end
 
+          def plain_#{name}
+            #{name}.body.to_plain_text
+          end
+
           def #{name}=(body)
             #{name}.body = body
           end

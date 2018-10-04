@@ -5,8 +5,15 @@
   <%= @message.subject %>
 </p>
 
+<strong>HTML Content:</strong>
+
 <div class="trix-content">
-  <%= @message.content.html_safe %>
+  <%= @message.content %>
+</div>
+
+<strong>Plain Content:</strong>
+<div>
+  <%= @message.plain_content %>
 </div>
 
 <%= link_to 'Edit', edit_message_path(@message) %> |
