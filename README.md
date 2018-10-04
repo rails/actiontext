@@ -84,4 +84,12 @@ Action Text is destined for inclusion in Rails 6, which is due to be released so
 
 ## License
 
-Action Text is released under the [MIT License](https://opensource.org/licenses/MIT).
+Action Text is distributed under the terms of both the MIT license and the Apache License (Version 2.0).
+
+See [LICENSE-APACHE](LICENSE-APACHE), [LICENSE-MIT](LICENSE-MIT), and [COPYRIGHT](COPYRIGHT) for details.
+
+## Contributing
+
+Unless you explicitly state otherwise, any contribution you intentionally submit
+for inclusion in the work, as defined in the Apache-2.0 license, shall be
+dual-licensed as above, without any additional terms or conditions.
