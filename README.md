@@ -26,8 +26,8 @@ Assumes a Rails 6+ application with Active Storage and Webpacker installed.
 1. Install assets, npm dependency, and migrations:
 
    ```
-   rails action_text:install
-   rails db:migrate
+   ./bin/rails action_text:install
+   ./bin/rails db:migrate
    ```
 
 ## Examples
