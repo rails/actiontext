@@ -45,6 +45,8 @@ module ActionView::Helpers
     end
 
     def editable_value
+      raise ActionText::MissingHashRichTextError, object: object, method_name: @method_name unless value
+
       value.body.try(:to_trix_html)
     end
   end
