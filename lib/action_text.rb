@@ -35,4 +35,6 @@ module ActionText
     autoload :Minification
     autoload :TrixConversion
   end
+
+  mattr_accessor :attachables, default: []
 end

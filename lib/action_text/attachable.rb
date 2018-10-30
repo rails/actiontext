@@ -10,9 +10,7 @@ module ActionText
       def from_node(node)
         if attachable = attachable_from_sgid(node["sgid"])
           attachable
-        elsif attachable = ActionText::Attachables::ContentAttachment.from_node(node)
-          attachable
-        elsif attachable = ActionText::Attachables::RemoteImage.from_node(node)
+        elsif attachable = attachable_from_attachables(node)
           attachable
         else
           ActionText::Attachables::MissingAttachable
@@ -26,6 +24,18 @@ module ActionText
       end
 
       private
+        def attachable_from_attachables(node)
+          ActionText.attachables.reduce(nil) do |result, klass|
+            next result if result
+
+            if attachable = klass.from_node(node)
+              result = attachable
+            end
+
+            result
+          end
+        end
+
         def attachable_from_sgid(sgid)
           from_attachable_sgid(sgid)
         rescue ActiveRecord::RecordNotFound

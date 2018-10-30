@@ -3,6 +3,36 @@
 require 'test_helper'
 
 class ActionText::ContentTest < ActiveSupport::TestCase
+
+  class CustomAttachment
+    include ActiveModel::Model
+
+    def self.from_node(node)
+      if node["content-type"]
+        if matches = node["content-type"].match(/vnd\.exampleorg\.custom\.html/)
+          new
+        end
+      end
+    end
+
+    def name
+      "custom"
+    end
+
+    def to_partial_path
+      "action_text/attachables/content_attachment"
+    end
+  end
+
+  setup do
+    @original_attachables = ActionText.attachables
+    ActionText.attachables += [ CustomAttachment ]
+  end
+
+  teardown do
+    ActionText.attachables = @original_attachables
+  end
+
   test "equality" do
     html = %Q(<div>test</div>)
     content = content_from_html(html)
@@ -39,6 +69,30 @@ class ActionText::ContentTest < ActiveSupport::TestCase
     assert_equal attachable, attachment.attachable
   end
 
+  test "extracts generic attachables" do
+    html = %Q(<action-text-attachment content-type="vnd.rubyonrails.horizontal-rule.html><hr></action-text-attachment>)
+
+    content = content_from_html(html)
+    assert_equal 1, content.attachments.size
+    assert_equal 0, content.embeddable_attachments.size
+
+    attachment = content.attachments.first
+    attachable = attachment.attachable
+    assert_kind_of ActionText::Attachables::ContentAttachment, attachable
+  end
+
+  test "extracts custom attachables" do
+    html = %Q(<action-text-attachment content-type="vnd.exampleorg.custom.html"><div class="custom-widget">just an example</div></action-text-attachment>)
+
+    content = content_from_html(html)
+    assert_equal 1, content.attachments.size
+    assert_equal 0, content.embeddable_attachments.size
+
+    attachment = content.attachments.first
+    attachable = attachment.attachable
+    assert_kind_of CustomAttachment, attachable
+  end
+
   test "extracts remote image attachables" do
     html = %Q(<action-text-attachment content-type="image" url="http://example.com/cat.jpg" width="100" height="100" caption="Captioned"></action-text-attachment>)
 
@@ -62,6 +116,14 @@ class ActionText::ContentTest < ActiveSupport::TestCase
     content = content_from_html(html)
     assert_equal 1, content.attachments.size
     assert_equal ActionText::Attachables::MissingAttachable, content.attachments.first.attachable
+  end
+
+  test "excludes destroyed attachments from embeddable" do
+    attachable = create_file_blob(filename: "racecar.jpg", content_type: "image/jpg")
+    html = %Q(<action-text-attachment sgid="#{attachable.attachable_sgid}"></action-text-attachment>)
+    attachable.destroy!
+    content = content_from_html(html)
+    assert_equal 0, content.embeddable_attachments.size
   end
 
   test "extracts missing attachables" do

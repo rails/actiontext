@@ -73,6 +73,13 @@ class ActionText::PlainTextConversionTest < ActiveSupport::TestCase
     )
   end
 
+  test "<action-text-attachment content-type=horizontal-rule> tags are converted to their plain-text representation" do
+    assert_converted_to(
+      "Hello world!  ┄ ",
+      %Q(Hello world! <action-text-attachment content-type="vnd.rubyonrails.horizontal-rule.html"><hr></action-text-attachment>)
+    )
+  end
+
   test "preserves non-linebreak whitespace after text" do
     assert_converted_to(
       "Hello world!",

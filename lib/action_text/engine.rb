@@ -1,10 +1,18 @@
 # frozen_string_literal: true
 
 require "rails/engine"
+require "action_text"
+
+require "action_text/attachables/content_attachment"
+require "action_text/attachables/remote_image"
 
 module ActionText
   class Engine < Rails::Engine
     isolate_namespace ActionText
+
+    config.action_text = ActiveSupport::OrderedOptions.new
+    config.action_text.attachables = [ ActionText::Attachables::ContentAttachment, ActionText::Attachables::RemoteImage ]
+
     config.eager_load_namespaces << ActionText
 
     initializer "action_text.attribute" do
@@ -32,6 +40,8 @@ module ActionText
     initializer "action_text.config" do
       config.after_initialize do |app|
         ActionText.renderer ||= ApplicationController.renderer
+
+        ActionText.attachables = app.config.action_text.attachables || []
 
         # FIXME: ApplicationController should have a per-request specific renderer
         # that's been set with the request.env env, and ActionText should just piggyback off

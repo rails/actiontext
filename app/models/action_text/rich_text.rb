@@ -15,6 +15,6 @@ class ActionText::RichText < ActiveRecord::Base
   has_many_attached :embeds
 
   before_save do
-    self.embeds = body.attachments.map(&:attachable) if body.present?
+    self.embeds = body.embeddable_attachments.map(&:attachable) if body.present?
   end
 end

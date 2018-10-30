@@ -57,6 +57,10 @@ module ActionText
       self.class.new([self.to_s.presence, *attachments].compact.join("\n"))
     end
 
+    def embeddable_attachments
+      attachments.select { |attachment| attachment.try(:attachable).is_a?(ActiveStorage::Blob) }
+    end
+
     def render_attachments(**options, &block)
       content = fragment.replace(ActionText::Attachment::SELECTOR) do |node|
         block.call(attachment_for_node(node, **options))
