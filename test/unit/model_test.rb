@@ -36,4 +36,13 @@ class ActionText::ModelTest < ActiveSupport::TestCase
     message = Message.create(subject: "Greetings", body: "<h1>Hello world</h1>")
     assert_equal "Hello world", message.body.to_plain_text
   end
+
+  test "can save content with non-blob attachments" do
+    attachable = Person.create! name: "Javan"
+
+    assert_nothing_raised do
+      message = Message.create(subject: "Greetings", body: %Q(<action-text-attachment sgid="#{attachable.attachable_sgid}"></action-text-attachment>))
+    end
+  end
+
 end
