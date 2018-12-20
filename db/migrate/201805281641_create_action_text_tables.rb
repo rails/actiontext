@@ -1,4 +1,4 @@
-class CreateActionTextTables < ActiveRecord::Migration[5.2]
+class CreateActionTextTables < ActiveRecord::Migration[6.0]
   def change
     create_table :action_text_rich_texts do |t|
       t.string     :name, null: false
